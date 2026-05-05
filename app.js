@@ -42,8 +42,14 @@ async function apiCall(endpoint, options = {}) {
         });
         
         if (!response.ok) {
-            const error = await response.json().catch(() => ({ detail: 'حدث خطأ' }));
-            throw new Error(error.detail || 'حدث خطأ');
+            let errorMsg = 'حدث خطأ';
+            try {
+                const errorData = await response.json();
+                errorMsg = errorData.detail || errorData.message || 'حدث خطأ';
+            } catch (e) {
+                errorMsg = `خطأ ${response.status}`;
+            }
+            throw new Error(errorMsg);
         }
         
         return await response.json();
@@ -85,7 +91,8 @@ async function login(phone, password) {
         });
         
         if (data.user.role !== 'admin') {
-            throw new Error('هذه اللوحة للمدراء فقط');
+            document.getElementById('login-error').textContent = 'هذه اللوحة للمدراء فقط';
+            return;
         }
         
         state.token = data.token;
@@ -98,7 +105,8 @@ async function login(phone, password) {
         loadAllData();
         
     } catch (error) {
-        document.getElementById('login-error').textContent = error.message;
+        const errorMsg = error.message || 'فشل تسجيل الدخول';
+        document.getElementById('login-error').textContent = errorMsg;
     }
 }
 
