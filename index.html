@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAST STAR DELIVERY - لوحة التحكم</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-container">
+        <div class="login-box">
+            <div class="login-logo">
+                <i class="fas fa-star"></i>
+                <h1>FAST STAR</h1>
+                <p>DELIVERY</p>
+            </div>
+            <form id="login-form">
+                <div class="input-group">
+                    <i class="fas fa-phone"></i>
+                    <input type="text" id="login-phone" placeholder="رقم الهاتف" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="login-password" placeholder="كلمة المرور" required>
+                </div>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    تسجيل الدخول
+                </button>
+            </form>
+            <div id="login-error" class="error-message"></div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="dashboard-container" style="display: none;">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-star"></i>
+                <span>FAST STAR</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-tab="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>لوحة التحكم</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="orders">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>الطلبات</span>
+                    <span class="badge" id="orders-badge">0</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="restaurants">
+                    <i class="fas fa-utensils"></i>
+                    <span>المطاعم</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="drivers">
+                    <i class="fas fa-motorcycle"></i>
+                    <span>السائقين</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="zones">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <span>المناطق</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="map">
+                    <i class="fas fa-map"></i>
+                    <span>الخريطة المباشرة</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="complaints">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>الشكاوى</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="notifications">
+                    <i class="fas fa-bell"></i>
+                    <span>الإشعارات</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logout-btn" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>تسجيل الخروج</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="header-title">
+                    <h1 id="page-title">لوحة التحكم</h1>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-refresh" onclick="refreshData()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <div class="admin-info">
+                        <i class="fas fa-user-shield"></i>
+                        <span id="admin-name">المدير</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Tab -->
+            <section id="tab-dashboard" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-shopping-bag"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="stat-today-orders">0</h3>
+                            <p>طلبات اليوم</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="stat-today-revenue">0 JOD</h3>
+                            <p>إيرادات اليوم</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-motorcycle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="stat-active-drivers">0</h3>
+                            <p>سائقين نشطين</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <i class="fas fa-calendar-week"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="stat-week-orders">0</h3>
+                            <p>طلبات الأسبوع</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-clock"></i> الطلبات الأخيرة</h2>
+                        </div>
+                        <div class="card-body">
+                            <div id="recent-orders" class="orders-list"></div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-users"></i> السائقين النشطين</h2>
+                        </div>
+                        <div class="card-body">
+                            <div id="active-drivers-list" class="drivers-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Orders Tab -->
+            <section id="tab-orders" class="tab-content">
+                <div class="tab-header">
+                    <div class="filter-group">
+                        <select id="order-status-filter">
+                            <option value="all">جميع الحالات</option>
+                            <option value="pending">قيد الانتظار</option>
+                            <option value="picked_up">تم الاستلام</option>
+                            <option value="on_the_way">في الطريق</option>
+                            <option value="delivered">تم التسليم</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div id="orders-list" class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>رقم الطلب</th>
+                                        <th>المطعم</th>
+                                        <th>العميل</th>
+                                        <th>المنطقة</th>
+                                        <th>التوصيل</th>
+                                        <th>السائق</th>
+                                        <th>الحالة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="orders-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Restaurants Tab -->
+            <section id="tab-restaurants" class="tab-content">
+                <div class="tab-header">
+                    <button class="btn-primary" onclick="showAddRestaurantModal()">
+                        <i class="fas fa-plus"></i> إضافة مطعم
+                    </button>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div id="restaurants-list" class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>الاسم</th>
+                                        <th>الهاتف</th>
+                                        <th>المنطقة</th>
+                                        <th>الطلبات</th>
+                                        <th>الحالة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="restaurants-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Drivers Tab -->
+            <section id="tab-drivers" class="tab-content">
+                <div class="tab-header">
+                    <button class="btn-primary" onclick="showAddDriverModal()">
+                        <i class="fas fa-plus"></i> إضافة سائق
+                    </button>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div id="drivers-list" class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>الاسم</th>
+                                        <th>الهاتف</th>
+                                        <th>المنطقة</th>
+                                        <th>المركبة</th>
+                                        <th>التوصيلات</th>
+                                        <th>الحالة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="drivers-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Zones Tab -->
+            <section id="tab-zones" class="tab-content">
+                <div class="tab-header">
+                    <button class="btn-primary" onclick="showAddZoneModal()">
+                        <i class="fas fa-plus"></i> إضافة منطقة جديدة
+                    </button>
+                </div>
+                <div class="zones-grid" id="zones-list"></div>
+            </section>
+
+            <!-- Map Tab -->
+            <section id="tab-map" class="tab-content">
+                <div class="card full-height">
+                    <div class="card-header">
+                        <h2><i class="fas fa-map-marker-alt"></i> مواقع السائقين المباشرة</h2>
+                        <span class="live-indicator"><i class="fas fa-circle"></i> مباشر</span>
+                    </div>
+                    <div class="card-body map-container">
+                        <div id="live-map"></div>
+                        <div id="map-drivers-list" class="map-sidebar"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Complaints Tab -->
+            <section id="tab-complaints" class="tab-content">
+                <div class="card">
+                    <div class="card-body">
+                        <div id="complaints-list" class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>المرسل</th>
+                                        <th>النوع</th>
+                                        <th>الرسالة</th>
+                                        <th>التاريخ</th>
+                                        <th>الحالة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="complaints-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Notifications Tab -->
+            <section id="tab-notifications" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-paper-plane"></i> إرسال إشعار</h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="send-notification-form" class="form-grid">
+                            <div class="form-group">
+                                <label>العنوان</label>
+                                <input type="text" id="notif-title" placeholder="عنوان الإشعار" required>
+                            </div>
+                            <div class="form-group">
+                                <label>الرسالة</label>
+                                <textarea id="notif-message" placeholder="نص الرسالة" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>إرسال إلى</label>
+                                <select id="notif-target">
+                                    <option value="all">الجميع</option>
+                                    <option value="drivers">السائقين فقط</option>
+                                    <option value="restaurants">المطاعم فقط</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-paper-plane"></i> إرسال
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add Driver Modal -->
+    <div id="add-driver-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-plus"></i> إضافة سائق جديد</h2>
+                <button class="modal-close" onclick="closeModal('add-driver-modal')">&times;</button>
+            </div>
+            <form id="add-driver-form">
+                <div class="form-group">
+                    <label>الاسم</label>
+                    <input type="text" id="driver-name" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف</label>
+                    <input type="text" id="driver-phone" required>
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="driver-password" required>
+                </div>
+                <div class="form-group">
+                    <label>نوع المركبة</label>
+                    <select id="driver-vehicle">
+                        <option value="دراجة نارية">دراجة نارية</option>
+                        <option value="سيارة">سيارة</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>المنطقة</label>
+                    <select id="driver-zone">
+                        <option value="الإذاعة">الإذاعة</option>
+                        <option value="المقابلين">المقابلين</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('add-driver-modal')">إلغاء</button>
+                    <button type="submit" class="btn-primary">إضافة</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Restaurant Modal -->
+    <div id="add-restaurant-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-store"></i> إضافة مطعم جديد</h2>
+                <button class="modal-close" onclick="closeModal('add-restaurant-modal')">&times;</button>
+            </div>
+            <form id="add-restaurant-form">
+                <div class="form-group">
+                    <label>اسم المطعم</label>
+                    <input type="text" id="restaurant-name" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف</label>
+                    <input type="text" id="restaurant-phone" required>
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="restaurant-password" required>
+                </div>
+                <div class="form-group">
+                    <label>المنطقة</label>
+                    <select id="restaurant-zone">
+                        <option value="الإذاعة">الإذاعة</option>
+                        <option value="المقابلين">المقابلين</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('add-restaurant-modal')">إلغاء</button>
+                    <button type="submit" class="btn-primary">إضافة</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Zone Modal -->
+    <div id="add-zone-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-map-marked-alt"></i> إضافة منطقة جديدة</h2>
+                <button class="modal-close" onclick="closeModal('add-zone-modal')">&times;</button>
+            </div>
+            <form id="add-zone-form">
+                <div class="form-group">
+                    <label>اسم المنطقة</label>
+                    <input type="text" id="zone-name" required>
+                </div>
+                <div class="form-group">
+                    <label>نوع التوزيع</label>
+                    <select id="zone-distribution">
+                        <option value="smart_round_robin">توزيع تلقائي (Round Robin)</option>
+                        <option value="manual">توزيع يدوي</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('add-zone-modal')">إلغاء</button>
+                    <button type="submit" class="btn-primary">إضافة</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Assign Driver Modal -->
+    <div id="assign-driver-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-check"></i> تعيين سائق</h2>
+                <button class="modal-close" onclick="closeModal('assign-driver-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="assign-order-id">
+                <p id="assign-order-info"></p>
+                <div id="available-drivers-list" class="drivers-chips"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Sub-Area Modal -->
+    <div id="add-subarea-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-map-pin"></i> إضافة منطقة فرعية</h2>
+                <button class="modal-close" onclick="closeModal('add-subarea-modal')">&times;</button>
+            </div>
+            <form id="add-subarea-form">
+                <input type="hidden" id="subarea-zone-id">
+                <div class="form-group">
+                    <label>اسم المنطقة الفرعية</label>
+                    <input type="text" id="subarea-name" required>
+                </div>
+                <div class="form-group">
+                    <label>سعر التوصيل (JOD)</label>
+                    <input type="number" id="subarea-fee" step="0.1" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('add-subarea-modal')">إلغاء</button>
+                    <button type="submit" class="btn-primary">إضافة</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA6m7xB7ZzkWSkdF1tAZMd6TtXQeIKt5R0"></script>
+    <script src="app.js"></script>
+</body>
+</html>
