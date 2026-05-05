@@ -84,14 +84,32 @@ function getStatusLabel(status) {
 
 // ==================== Authentication ====================
 async function login(phone, password) {
+    const errorEl = document.getElementById('login-error');
+    errorEl.textContent = 'جاري تسجيل الدخول...';
+    
     try {
-        const data = await apiCall('/auth/login', {
+        console.log('Attempting login with phone:', phone);
+        
+        const response = await fetch(`${API_BASE}/auth/login`, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({ phone, password })
         });
         
+        console.log('Response status:', response.status);
+        
+        const data = await response.json();
+        console.log('Response data:', data);
+        
+        if (!response.ok) {
+            errorEl.textContent = data.detail || 'فشل تسجيل الدخول';
+            return;
+        }
+        
         if (data.user.role !== 'admin') {
-            document.getElementById('login-error').textContent = 'هذه اللوحة للمدراء فقط';
+            errorEl.textContent = 'هذه اللوحة للمدراء فقط';
             return;
         }
         
@@ -101,12 +119,13 @@ async function login(phone, password) {
         localStorage.setItem('admin_token', data.token);
         localStorage.setItem('admin_user', JSON.stringify(data.user));
         
+        errorEl.textContent = '';
         showDashboard();
         loadAllData();
         
     } catch (error) {
-        const errorMsg = error.message || 'فشل تسجيل الدخول';
-        document.getElementById('login-error').textContent = errorMsg;
+        console.error('Login error:', error);
+        errorEl.textContent = 'فشل الاتصال بالسيرفر - تأكد من اتصال الإنترنت';
     }
 }
 
