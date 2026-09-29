@@ -906,3 +906,4 @@ document.querySelectorAll('.modal').forEach(modal => {
 document.addEventListener('DOMContentLoaded', () => {
     checkAuth();
 });
+
